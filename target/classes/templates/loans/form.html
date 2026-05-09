@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Nouvel emprunt')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-0">
+                <div th:replace="~{fragments/layout :: sidebar}"></div>
+            </div>
+            <div class="col-md-10">
+                <div class="content-wrapper">
+                    <div th:replace="~{fragments/layout :: alerts}"></div>
+                    
+                    <div class="page-header">
+                        <h1><i class="bi bi-plus-circle me-2"></i>Nouvel emprunt</h1>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <form th:action="@{/loans}" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Livre *</label>
+                                            <select name="bookId" class="form-select" required>
+                                                <option value="">Sélectionner un livre</option>
+                                                <option th:each="book : ${books}" th:value="${book.id}">
+                                                    <span th:text="${book.title}"></span> - 
+                                                    <span th:text="${book.availableCopies}"></span> disponible(s)
+                                                </option>
+                                            </select>
+                                            <small class="text-muted">Seuls les livres disponibles sont affichés</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Membre *</label>
+                                            <select name="memberId" class="form-select" required>
+                                                <option value="">Sélectionner un membre</option>
+                                                <option th:each="member : ${members}" th:value="${member.id}" th:text="${member.fullName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Date de retour prévue</label>
+                                    <input type="date" name="dueDate" class="form-control" 
+                                           th:value="${#temporals.format(#temporals.createNow().plusDays(14), 'yyyy-MM-dd')}">
+                                    <small class="text-muted">Par défaut: 14 jours à partir d'aujourd'hui</small>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Un emprunt sera automatiquement créé avec la date d'aujourd'hui comme date d'emprunt.
+                                    Le nombre d'exemplaires disponibles du livre sera décrémenté.
+                                </div>
+
+                                <div class="d-flex justify-content-between pt-3 border-top">
+                                    <a th:href="@{/loans}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i>Annuler
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle me-1"></i>Créer l'emprunt
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: scripts}"></footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Auteurs')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-0">
+                <div th:replace="~{fragments/layout :: sidebar}"></div>
+            </div>
+            <div class="col-md-10">
+                <div class="content-wrapper">
+                    <div th:replace="~{fragments/layout :: alerts}"></div>
+                    
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <h1><i class="bi bi-pen me-2"></i>Auteurs</h1>
+                        <div class="d-flex gap-2">
+                            <form th:action="@{/authors/search}" method="get" class="d-flex">
+                                <input type="text" name="query" class="form-control me-2" placeholder="Rechercher...">
+                                <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+                            </form>
+                            <a th:href="@{/authors/new}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-1"></i>Nouvel auteur
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+                        <div class="col" th:each="author : ${authors}">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                                         style="width: 80px; height: 80px; font-size: 2rem;">
+                                        <span th:text="${author.firstName.charAt(0)}"></span><span th:text="${author.lastName.charAt(0)}"></span>
+                                    </div>
+                                    <h5 class="card-title" th:text="${author.fullName}"></h5>
+                                    <p class="text-muted mb-2" th:if="${author.nationality}" th:text="${author.nationality}"></p>
+                                    <p class="small text-muted" th:text="${#strings.abbreviate(author.biography, 100)}"></p>
+                                </div>
+                                <div class="card-footer bg-white border-0 text-center pb-3">
+                                    <div class="btn-group btn-group-sm">
+                                        <a th:href="@{/authors/{id}(id=${author.id})}" class="btn btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/authors/{id}/edit(id=${author.id})}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form th:action="@{/authors/{id}/delete(id=${author.id})}" method="post" class="d-inline"
+                                              onsubmit="return confirm('Êtes-vous sûr?')">
+                                            <button type="submit" class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12" th:if="${#lists.isEmpty(authors)}">
+                            <div class="card">
+                                <div class="card-body text-center py-5 text-muted">
+                                    <i class="bi bi-pen fs-1 d-block mb-2"></i>
+                                    Aucun auteur trouvé
+                                    <br>
+                                    <a th:href="@{/authors/new}" class="btn btn-primary mt-3">Ajouter un auteur</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: scripts}"></footer>
+</body>
+</html>

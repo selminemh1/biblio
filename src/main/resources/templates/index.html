@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Tableau de bord')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-0">
+                <div th:replace="~{fragments/layout :: sidebar}"></div>
+            </div>
+            <div class="col-md-10">
+                <div class="content-wrapper">
+                    <div th:replace="~{fragments/layout :: alerts}"></div>
+                    
+                    <div class="page-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1><i class="bi bi-speedometer2 me-2"></i>Tableau de bord</h1>
+                            <p class="text-muted mb-0">Bienvenue dans votre système de gestion de bibliothèque</p>
+                        </div>
+                        <div>
+                            <span class="text-muted" th:text="${#temporals.format(#temporals.createNow(), 'EEEE dd MMMM yyyy', new java.util.Locale('fr', 'FR'))}"></span>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <a th:href="@{/books}" class="text-decoration-none">
+                                <div class="card stat-card h-100" style="cursor: pointer;">
+                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="mb-1 text-white-50">Total Livres</p>
+                                            <h2 class="stat-number mb-0" th:text="${totalBooks}">0</h2>
+                                            <small class="text-white-50" th:text="${availableCopies} + ' exemplaires disponibles'"></small>
+                                        </div>
+                                        <i class="bi bi-book stat-icon"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a th:href="@{/members}" class="text-decoration-none">
+                                <div class="card stat-card success h-100" style="cursor: pointer;">
+                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="mb-1 text-white-50">Membres</p>
+                                            <h2 class="stat-number mb-0" th:text="${totalMembers}">0</h2>
+                                            <small class="text-white-50" th:text="${activeMembers} + ' membres actifs'"></small>
+                                        </div>
+                                        <i class="bi bi-people stat-icon"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a th:href="@{/loans/active}" class="text-decoration-none">
+                                <div class="card stat-card warning h-100" style="cursor: pointer;">
+                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="mb-1 text-white-50">Emprunts actifs</p>
+                                            <h2 class="stat-number mb-0" th:text="${activeLoans}">0</h2>
+                                            <small class="text-white-50">En cours</small>
+                                        </div>
+                                        <i class="bi bi-arrow-left-right stat-icon"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a th:href="@{/loans/overdue}" class="text-decoration-none">
+                                <div class="card stat-card danger h-100" style="cursor: pointer;">
+                                    <div class="card-body d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <p class="mb-1 text-white-50">En retard</p>
+                                            <h2 class="stat-number mb-0" th:text="${overdueLoans}">0</h2>
+                                            <small class="text-white-50">À récupérer</small>
+                                        </div>
+                                        <i class="bi bi-exclamation-triangle stat-icon"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-white border-0 pt-4 px-4">
+                                    <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Actions rapides</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <a th:href="@{/loans/new}" class="btn btn-primary btn-lg">
+                                            <i class="bi bi-plus-circle me-2"></i>Nouvel emprunt
+                                        </a>
+                                        <a th:href="@{/books/new}" class="btn btn-outline-primary">
+                                            <i class="bi bi-book me-2"></i>Ajouter un livre
+                                        </a>
+                                        <a th:href="@{/members/new}" class="btn btn-outline-primary">
+                                            <i class="bi bi-person-plus me-2"></i>Nouveau membre
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-white border-0 pt-4 px-4">
+                                    <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Statistiques</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-4">
+                                            <div class="p-3 rounded bg-light">
+                                                <i class="bi bi-pen text-primary fs-2"></i>
+                                                <h4 class="mb-0 mt-2" th:text="${totalAuthors}">0</h4>
+                                                <small class="text-muted">Auteurs</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="p-3 rounded bg-light">
+                                                <i class="bi bi-tags text-success fs-2"></i>
+                                                <h4 class="mb-0 mt-2" th:text="${totalCategories}">0</h4>
+                                                <small class="text-muted">Catégories</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="p-3 rounded bg-light">
+                                                <i class="bi bi-book-half text-warning fs-2"></i>
+                                                <h4 class="mb-0 mt-2" th:text="${availableCopies}">0</h4>
+                                                <small class="text-muted">Disponibles</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Loans -->
+                    <div class="card">
+                        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Emprunts récents</h5>
+                            <a th:href="@{/loans}" class="btn btn-sm btn-outline-primary">Voir tous</a>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Livre</th>
+                                            <th>Membre</th>
+                                            <th>Date emprunt</th>
+                                            <th>Date retour prévue</th>
+                                            <th>Statut</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="loan : ${recentLoans}" th:if="${#lists.size(recentLoans) > 0}">
+                                            <td>
+                                                <strong th:text="${loan.book.title}"></strong>
+                                            </td>
+                                            <td th:text="${loan.member.fullName}"></td>
+                                            <td th:text="${#temporals.format(loan.loanDate, 'dd/MM/yyyy')}"></td>
+                                            <td th:text="${#temporals.format(loan.dueDate, 'dd/MM/yyyy')}"></td>
+                                            <td>
+                                                <span th:if="${loan.overdue}" class="badge bg-danger">En retard</span>
+                                                <span th:if="${!loan.overdue && loan.status.name() == 'ACTIVE'}" class="badge bg-warning">Actif</span>
+                                                <span th:if="${loan.status.name() == 'RETURNED'}" class="badge bg-success">Retourné</span>
+                                            </td>
+                                            <td>
+                                                <form th:if="${loan.status.name() == 'ACTIVE'}" th:action="@{/loans/{id}/return(id=${loan.id})}" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="bi bi-check-circle"></i> Retourner
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(recentLoans)}">
+                                            <td colspan="6" class="text-center py-4 text-muted">
+                                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                                Aucun emprunt actif
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: scripts}"></footer>
+</body>
+</html>
