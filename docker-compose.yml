@@ -1,0 +1,110 @@
+# =============================================================
+# docker-compose.yml — Environnement DEV local
+# Stack complète : MySQL + App Spring Boot + Prometheus + Grafana
+# =============================================================
+
+version: "3.9"
+
+services:
+
+  # ───────────────────────────────────────────────────────────
+  # MySQL 8.0 — remplace XAMPP en local
+  # ───────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: library-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: librarydb
+      MYSQL_USER: libraryuser
+      MYSQL_PASSWORD: librarypassword
+    ports:
+      - "3307:3306"       # 3307 côté Windows pour éviter conflit avec XAMPP sur 3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - library-network
+
+  # ───────────────────────────────────────────────────────────
+  # Spring Boot App — bibliothèque
+  # ───────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: library-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy     # attend que MySQL soit vraiment prêt
+    environment:
+      # Variables DB injectées → lues par application-docker.properties
+      DB_HOST: mysql                   # nom du service = hostname réseau Docker
+      DB_PORT: 3306
+      DB_NAME: librarydb
+      DB_USER: libraryuser
+      DB_PASSWORD: librarypassword
+    ports:
+      - "8081:8081"
+    networks:
+      - library-network
+
+  # ───────────────────────────────────────────────────────────
+  # Prometheus — collecte des métriques
+  # ───────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: library-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - library-network
+
+  # ───────────────────────────────────────────────────────────
+  # Grafana — dashboards de monitoring
+  # ───────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.3.0
+    container_name: library-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+    depends_on:
+      - prometheus
+    networks:
+      - library-network
+
+# ─── Volumes persistants ────────────────────────────────────
+volumes:
+  mysql_data:
+  prometheus_data:
+  grafana_data:
+
+# ─── Réseau interne isolé ───────────────────────────────────
+networks:
+  library-network:
+    driver: bridge

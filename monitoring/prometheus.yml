@@ -1,0 +1,34 @@
+# =============================================================
+# prometheus.yml — Configuration Prometheus
+# Scrape Spring Boot Actuator + métriques système
+# =============================================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    project: 'library-management'
+    env: 'development'
+
+scrape_configs:
+
+  # Prometheus lui-même
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Spring Boot Actuator → /actuator/prometheus
+  - job_name: "library-app"
+    metrics_path: "/actuator/prometheus"
+    scrape_interval: 10s
+    static_configs:
+      - targets: ["app:8081"]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: "library-app"
+
+  # MySQL Exporter (optionnel, pour les métriques DB)
+  # - job_name: "mysql"
+  #   static_configs:
+  #     - targets: ["mysql-exporter:9104"]

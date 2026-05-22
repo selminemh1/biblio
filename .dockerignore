@@ -1,0 +1,34 @@
+# Build artifacts
+target/
+*.class
+
+# Données locales XAMPP (ne jamais inclure dans l'image)
+data/
+*.db
+*.db-shm
+*.db-wal
+*.mv.db
+*.trace.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Documentation
+*.md
+docs/
+
+# Docker compose (pas nécessaire dans l'image)
+docker-compose*.yml
+monitoring/
+
+# OS
+.DS_Store
+Thumbs.db
