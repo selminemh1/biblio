@@ -2,7 +2,6 @@
 # docker-compose.yml — Environnement DEV local
 # Stack complète : MySQL + App Spring Boot + Prometheus + Grafana
 # =============================================================
-
 services:
 
   # ───────────────────────────────────────────────────────────
