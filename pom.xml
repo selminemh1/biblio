@@ -74,6 +74,22 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- 2. Dans <dependencies> : ajouter à la fin -->
+<!-- Actuator : expose /actuator/health et /actuator/prometheus -->
+        <dependency>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+ 
+<!-- Micrometer : format métriques Prometheus -->
+        <dependency>
+             <groupId>io.micrometer</groupId>
+             <artifactId>micrometer-registry-prometheus</artifactId>
+             <scope>runtime</scope>
+        </dependency>
+
+
     </dependencies>
     
     <build>
@@ -90,6 +106,22 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+
+            <!-- 3. Dans <build><plugins> : ajouter après spring-boot-maven-plugin -->
+<!-- OWASP Dependency Check : scan CVE des dépendances Maven (DevSecOps) -->
+<plugin>
+    <groupId>org.owasp</groupId>
+    <artifactId>dependency-check-maven</artifactId>
+    <version>9.0.9</version>
+    <configuration>
+        <failBuildOnCVSS>7</failBuildOnCVSS>
+        <format>HTML</format>
+        <outputDirectory>${project.build.directory}/dependency-check-report</outputDirectory>
+    </configuration>
+</plugin>
+
+
         </plugins>
     </build>
 </project>
