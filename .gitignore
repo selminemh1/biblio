@@ -5,11 +5,12 @@ target/
 *.war
 
 # Fichiers de base de données locaux
-data/library.db
-data/library.db-shm
-data/library.db-wal
-data/librarydb.mv.db
-data/librarydb.trace.db
+data/
+*.db
+*.db-shm
+*.db-wal
+*.mv.db
+*.trace.db
 
 # IDE - IntelliJ IDEA
 .idea/
@@ -22,8 +23,9 @@ data/librarydb.trace.db
 .project
 .settings/
 
-# IDE - VS Code
+# IDE - VS Code / Kiro
 .vscode/
+.kiro/
 
 # OS
 .DS_Store
@@ -35,3 +37,11 @@ logs/
 
 # Spring Boot
 spring-shell.log
+
+# Secrets - jamais committer
+.env
+*.env
+.env.local
+
+# Docker volumes locaux
+docker-volumes/
