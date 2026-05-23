@@ -45,3 +45,18 @@ spring-shell.log
 
 # Docker volumes locaux
 docker-volumes/
+
+# Terraform — ne jamais committer
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/override.tf
+terraform/override.tf.json
+terraform/.terraform.lock.hcl
+
+# Credentials AWS — jamais committer
+.aws/
+*.pem
+
+terraform/terraform.tfvars
+terraform/*.tfvars

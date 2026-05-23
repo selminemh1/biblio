@@ -1,0 +1,11 @@
+variable "project_name"             { type = string }
+variable "environment"               { type = string }
+variable "vpc_id"                    { type = string }
+variable "db_subnet_1_id"            { type = string }
+variable "monitoring_sg_id"          { type = string }
+variable "monitoring_instance_type"  { type = string }
+variable "monitoring_key_pair"       { type = string }
+variable "alert_email"               { type = string }
+variable "ecs_cluster_name"          { type = string }
+variable "alb_arn_suffix"            { type = string }
+variable "db_identifier"             { type = string }
